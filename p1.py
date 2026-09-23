@@ -28,16 +28,18 @@ def dataprep_sum_pair_hit(n):
     """Genera un caso donde SÍ existe un par que suma target.
     Devuelve una tupla (lista, target)
     """
-    lst = random.randint()
+    lst = [random.randint(0, 80) for _ in range(n-2)]
+    lst.append(30)
+    lst.append(50)
+    random.shuffle(lst)
     target = 80
     return (lst, target)
-
 
 def dataprep_sum_pair_miss(n):
     """Genera un caso donde NO existe ningún par (Caso peor).
     Devuelve una tupla (lista, target)
     """
-    lst = random.randrange(0, 20, 2)
+    lst = [random.randrange(0, 20, 2) for _ in range(n)]
     target = 7
     return (lst, target)
 
