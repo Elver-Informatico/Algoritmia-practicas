@@ -54,10 +54,16 @@ def dataprep_rle(n):
 
 # I.A.2 Búsqueda de duplicados manteniendo orden de aparición
 def find_duplicates(lst):
-    """Devuelve los elementos que aparecen más de una vez en lst,
-    preservando el orden de su primera repetición y sin duplicados.
-    """
-    pass
+    list_set = set()
+    duplicates = []
+
+    for element in lst:
+        if element in list_set and element not in duplicates:
+            duplicates.append(element)
+        else:
+            list_set.add(element)
+
+    return duplicates
 
 # I.A.3 Búsqueda de par que suma target con complejidad O(n)
 def has_sum_pair(par):
