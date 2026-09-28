@@ -39,8 +39,8 @@ def dataprep_sum_pair_miss(n):
     """Genera un caso donde NO existe ningún par (Caso peor).
     Devuelve una tupla (lista, target)
     """
-    lst = [random.randrange(0, 20, 2) for _ in range(n)]
-    target = 7
+    lst = [random.randrange(0, 20, 2) for _ in range(n)] # numeros pares
+    target = random.randrange(0, 40, 2) + 1              # numero impar
     return (lst, target)
 
 
@@ -90,7 +90,22 @@ def rle_encode_naive(lst):
 # I.B.2 RLE Optimized / Óptimo
 def rle_encode_optimized(lst):
     """Codificación RLE optimizada usando append in-place."""
-    pass
+    current_elem = lst[0]
+    lst_out = []
+    count = 1
+
+    for elem in lst[1:]:
+        if elem == current_elem:
+            count += 1
+        else:
+            lst_out.append([current_elem, count])
+            current_elem = elem
+            count = 1
+
+    lst_out.append([current_elem, count])
+        
+    return lst_out
+
 
 # Función auxiliar para generar una gráfica de una serie de datos.
 def plot_single_curve(
