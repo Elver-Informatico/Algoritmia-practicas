@@ -85,7 +85,25 @@ def has_sum_pair(par):
 # I.B.1 RLE Naive / Ingenuo
 def rle_encode_naive(lst):
     """Codificación RLE utilizando operador + concatenador de listas."""
-    pass
+    resultado = []
+    if len(lst) == 0:
+        return resultado
+
+    elem_actual = lst[0]
+    contador = 1
+
+    for i in range (1, len(lst)):
+        if lst[i] == elem_actual:
+            contador +=1
+        else:
+            resultado =resultado + [(elem_actual,contador)]
+
+            elem_actual = lst[i]
+            contador = 1
+
+    resultado = resultado + [(elem_actual,contador)]
+    return resultado
+
 
 # I.B.2 RLE Optimized / Óptimo
 def rle_encode_optimized(lst):
