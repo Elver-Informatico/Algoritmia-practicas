@@ -171,16 +171,29 @@ def plot_single_curve(
 
 def init_cd(n: int)-> np.ndarray:
 # que devuelve un array con valores -1 en las posiciones {0, 1, ..., n-1}.
-    pass
+    aux = []
+    for _ in range(n):
+        aux.append(-1)
+    cd = np.array(aux)
+    return cd
 
 def union(rep_1: int, rep_2: int, p_cd: np.ndarray)-> int:
 # que devuelve el representante del conjunto obtenido como la unión por rangos de los representados 
 # por los índicesrep_1, rep_2 en el CD almacenado en el array p_cd.
     pass
+#def Union(p, x, y)
+# if p[x] < 0 and p[y] < 0 and x != y: # Representatives of different sets only
+# p[y] = x
+# return x
+# return None
 
 def find(ind: int, p_cd: np.ndarray)-> int:
 # que devuelve el representante del índice ind en el CD almacenado en p_cd realizando compresión de caminos.
     pass
+#def Find(p, x)
+# while p[x] >= 0:
+# x = p[x]
+# return x
 
 def cd_2_dict(p_cd: np.ndarray)-> dict:
 # que reciba un CD en el array p_cd y devuelva un diccionario cuyas claves sean los representantes de los
