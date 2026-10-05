@@ -1,6 +1,7 @@
 import time # Para la función time_measure. Entender código dado.
 import matplotlib.pyplot as plt # Para imprimir gráficas. Entender código dado.
 import random # Puede usarse random.randint(n, m) para generar listas aleatorias de enteros en las funciones dataprep.
+import numpy as np
 
 # I.A.1 Medición de tiempos de ejecución
 def time_measure(f, dataprep, Nlist, Nrep=1000, Nstat=100):
@@ -48,7 +49,7 @@ def dataprep_rle(n):
     """Genera una lista con rachas repetidas de dimensión n.
     Devuelve una lista.
     """
-    lst = "no sé :v"
+    lst = [random.randint(0, 2) for _ in range(n)]
     return lst
     
 
@@ -167,3 +168,29 @@ def plot_single_curve(
         )  #
 
     plt.show()  # Muestra la figura
+
+def init_cd(n: int)-> np.ndarray:
+# que devuelve un array con valores -1 en las posiciones {0, 1, ..., n-1}.
+    pass
+
+def union(rep_1: int, rep_2: int, p_cd: np.ndarray)-> int:
+# que devuelve el representante del conjunto obtenido como la unión por rangos de los representados 
+# por los índicesrep_1, rep_2 en el CD almacenado en el array p_cd.
+    pass
+
+def find(ind: int, p_cd: np.ndarray)-> int:
+# que devuelve el representante del índice ind en el CD almacenado en p_cd realizando compresión de caminos.
+    pass
+
+def cd_2_dict(p_cd: np.ndarray)-> dict:
+# que reciba un CD en el array p_cd y devuelva un diccionario cuyas claves sean los representantes de los
+# subconjuntos del CD y donde el valor de la clave u del dict sea una lista con los miembros del subconjunto
+# representado por u , incluyendo, por supuesto el propio u
+    pass
+
+def ccs(n: int, l: list)-> dict:
+# que nos devuelva las componentes conexas de un tal grafo. Para ello la función inicializará un CD vacío, 
+# examinará las ramas del grafo contenidas en la lista l y si los dos nodos de la rama pertenecen a subconjuntos distintos, 
+# unirá estos. Cuando se procesen todas las ramas la función convertirá la tabla que contenga el CD en un dict 
+# y devolverá éste
+    pass
