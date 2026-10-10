@@ -180,30 +180,56 @@ def init_cd(n: int)-> np.ndarray:
 def union(rep_1: int, rep_2: int, p_cd: np.ndarray)-> int:
 # que devuelve el representante del conjunto obtenido como la unión por rangos de los representados 
 # por los índicesrep_1, rep_2 en el CD almacenado en el array p_cd.
-    pass
-#def Union(p, x, y)
-# if p[x] < 0 and p[y] < 0 and x != y: # Representatives of different sets only
-# p[y] = x
-# return x
-# return None
+    if rep_1 == rep_2:
+        return rep_1
+
+    if p_cd[rep_1] < p_cd[rep_2]:  # rep_1 tiene mayor rango
+        p_cd[rep_2] = rep_1
+        return rep_1
+    elif p_cd[rep_1] > p_cd[rep_2]:  # rep_2 tiene mayor rango
+        p_cd[rep_1] = rep_2
+        return rep_2
+    else:  # Mismo rango
+        p_cd[rep_2] = rep_1
+        p_cd[rep_1] -= 1
+        return rep_1
 
 def find(ind: int, p_cd: np.ndarray)-> int:
 # que devuelve el representante del índice ind en el CD almacenado en p_cd realizando compresión de caminos.
-    pass
-#def Find(p, x)
-# while p[x] >= 0:
-# x = p[x]
-# return x
+    root = ind
+    while p_cd[root] >= 0:
+        root = p_cd[root]
+    
+    # Compresión de caminos
+    curr = ind
+    while curr != root:
+        nxt = p_cd[curr]
+        p_cd[curr] = root
+        curr = nxt
+        
+    return root
 
 def cd_2_dict(p_cd: np.ndarray)-> dict:
 # que reciba un CD en el array p_cd y devuelva un diccionario cuyas claves sean los representantes de los
 # subconjuntos del CD y donde el valor de la clave u del dict sea una lista con los miembros del subconjunto
 # representado por u , incluyendo, por supuesto el propio u
-    pass
+    res = {}
+    for i in range(len(p_cd)):
+        rep = find(i, p_cd)
+        if rep not in res:
+            res[rep] = []
+        res[rep].append(i)
+    return res
 
 def ccs(n: int, l: list)-> dict:
 # que nos devuelva las componentes conexas de un tal grafo. Para ello la función inicializará un CD vacío, 
 # examinará las ramas del grafo contenidas en la lista l y si los dos nodos de la rama pertenecen a subconjuntos distintos, 
 # unirá estos. Cuando se procesen todas las ramas la función convertirá la tabla que contenga el CD en un dict 
 # y devolverá éste
-    pass
+    p_cd = init_cd(n)
+    for u, v in l:
+        rep_u = find(u, p_cd)
+        rep_v = find(v, p_cd)
+        if rep_u != rep_v:
+            union(rep_u, rep_v, p_cd)
+    return cd_2_dict(p_cd)
