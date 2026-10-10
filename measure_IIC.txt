@@ -1,0 +1,22 @@
+Cuestiones Apartado II.C
+
+
+1. Sin darnos cuenta, en nuestro algoritmo de encontrar CCs podemos pasar listas con
+ramas repetidas o donde los vértices coinciden con los de una que ya está aunque en
+orden inverso. ¿Afectará esto al resultado del algoritmo? ¿Por qué?
+
+
+No afecta el resultado final del algoritmo porque la función usada find devolvería el mismo resultado y debido a la condicional no se produciría.
+
+2. Argumentar que nuestro algoritmo de encontrar componentes conexas es correcto, esto
+es, que a su final en los distintos subconjuntos disjuntos se encuentran los vértices de
+las distintas componentes del grafo dado.
+
+
+Al comienzo del algoritmo el algoritmo comprueba a cara arista (u,v) que u y v pertenecen a subconjuntos distintos y si son disjutnos fusiona sus arboles correspondientes y se podría concluir que es correcto si  dos vertices pertenecen al mismo arbol
+
+3. El tamaño de un grafo no dirigido viene determinado por el número n de nodos y la
+longitud de la lista l de ramas. Estimar razonadamente en función de ambos el coste
+del algoritmo de encontrar las componentes conexas mediante conjuntos disjuntos. 
+
+La incialización tiene un coste de O(n), mientras que el procesamiento de las aristas depende de la longitud de la lista de ramas |l| y como lg(n) del coste de find por lo que su coste seria de O(n + |l|*lg(n))
