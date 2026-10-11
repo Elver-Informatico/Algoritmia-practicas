@@ -1,1 +1,0 @@
-# Algoritmia-practicas
