@@ -56,11 +56,13 @@ def dataprep_rle(n):
 # I.A.2 Búsqueda de duplicados manteniendo orden de aparición
 def find_duplicates(lst):
     list_set = set()
+    duplicates_set = set()
     duplicates = []
 
     for element in lst:
-        if element in list_set and element not in duplicates:
+        if element in list_set and element not in duplicates_set:
             duplicates.append(element)
+            duplicates_set.add(element)
         else:
             list_set.add(element)
 
@@ -109,6 +111,9 @@ def rle_encode_naive(lst):
 # I.B.2 RLE Optimized / Óptimo
 def rle_encode_optimized(lst):
     """Codificación RLE optimizada usando append in-place."""
+    if not lst:
+        return []
+    
     current_elem = lst[0]
     lst_out = []
     count = 1
