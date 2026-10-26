@@ -16,7 +16,16 @@ def greedy_change(coins: List[int], amount: int) -> Tuple[List[int], int]:
     Estrategia codiciosa para el problema del cambio de monedas.
     Selecciona en cada paso la moneda de mayor valor que no supere la cantidad restante.
     """
-    pass
+    sorted_coins = sorted(coins, reverse=True)
+    selected = []
+    remainder = amount
+    
+    for coin in sorted_coins:
+        while remainder >= coin:
+            selected.append(coin)
+            remainder -= coin
+            
+    return selected, remainder
 
 def optimal_change(coins: List[int], amount: int) -> Optional[List[int]]:
     """
