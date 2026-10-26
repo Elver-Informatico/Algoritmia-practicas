@@ -34,17 +34,17 @@ def optimal_change(coins: List[int], amount: int) -> Optional[List[int]]:
     """
     coins.sort()
     
-    # Nmin[i] almacenará el número mínimo de monedas para la cantidad i.
-    # Inicializamos con infinito
+    # Nmin[i] almacenará el número de monedas (minimo)
+    # Inicializamos con 'inf'
     Nmin = [float('inf')] * (amount + 1)
 
-    # Para la cantidad 0, se necesitan 0 monedas.
+    # Para la cantidad 0, se necesitan 0 monedas
     Nmin[0] = 0
 
     # array para rastrear qué moneda se usó por última vez para formar la cantidad i
     moneda_usada = [-1] * (amount + 1)
 
-    # Llenamos la tabla de programación dinámica
+    # Tabla de programación dinámica
     for i in range(1, amount + 1):
         for moneda in coins:
             if moneda <= i:
@@ -53,11 +53,10 @@ def optimal_change(coins: List[int], amount: int) -> Optional[List[int]]:
                     Nmin[i] = Nmin[i - moneda] + 1
                     moneda_usada[i] = moneda
 
-    # Si Nmin[cantidad] sigue siendo infinito, no hay solución
     if Nmin[amount] == float('inf'):
         return None
 
-    # Reconstruimos la solución para saber qué monedas usamos
+    # Se escribe el resultado en orden
     resultado_monedas = []
     cantidad_actual = amount
     while cantidad_actual > 0:
@@ -73,6 +72,12 @@ def compare_change(coins: List[int], max_amount: int) -> Dict[str, List[int]]:
     Evalúa todas las cantidades entre 1 y max_amount, clasifica cada cantidad en
     'optimal', 'suboptimal', 'greedy_failed' o 'impossible'.
     """
+    #strl = ["optimal", "suboptimal", "greedy_failed", "impossible"]
+
+    #for i in range(1, max_amount):
+    #    if optimal_change(coins, i) == None:
+    #        str = strl[3]
+    #    elif
     pass
 
 # =============================================================================
@@ -91,7 +96,16 @@ def generate_activities(n: int, seed: int = 42) -> List[Tuple[str, int, int]]:
     Genera n actividades aleatorias reproducibles.
     start en [0, 10000], duration en [1, 100], end = start + duration.
     """
-    pass
+    random.seed(seed)
+    activities = []
+
+    for i in range(n):
+        start = random.randint(0, 10000)
+        duration = random.randint(1, 100)
+        end = start + duration
+        activities.append([f"A{i}", start, end])
+    
+    return activities
 
 # =============================================================================
 # III. Planificación de tareas con fechas límite
@@ -110,4 +124,3 @@ def generate_jobs(n: int, seed: int = 42) -> List[Tuple[str, int, int]]:
     profit en [1, 1000], deadline en [1, max(1, n // 10)].
     """
     pass
-
