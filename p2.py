@@ -89,7 +89,23 @@ def activity_selection(activities: List[Tuple[str, int, int]]) -> List[Tuple[str
     Selecciona el máximo número posible de actividades compatibles.
     Ordena por tiempo de finalización ascendente, y en caso de empate por inicio e identificador.
     """
-    pass
+    if not activities:
+        return []
+    
+    sorted_activities = sorted(activities, key=lambda x: (x[2], x[1], x[0]))
+    
+    selected = [sorted_activities[0]]
+    last_end = sorted_activities[0][2] 
+    
+    for act in sorted_activities[1:]:
+        start = act[1]
+        end = act[2]
+        
+        if start >= last_end:
+            selected.append(act)
+            last_end = end
+            
+    return selected
 
 def generate_activities(n: int, seed: int = 42) -> List[Tuple[str, int, int]]:
     """
