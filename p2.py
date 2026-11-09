@@ -72,13 +72,32 @@ def compare_change(coins: List[int], max_amount: int) -> Dict[str, List[int]]:
     Evalúa todas las cantidades entre 1 y max_amount, clasifica cada cantidad en
     'optimal', 'suboptimal', 'greedy_failed' o 'impossible'.
     """
-    #strl = ["optimal", "suboptimal", "greedy_failed", "impossible"]
+    result = {
+        "optimal": [],
+        "suboptimal": [],
+        "greedy_failed": [],
+        "impossible": []
+    }
+    
+    for amount in range(1, max_amount + 1):
+        
+        greedy_res, remainder = greedy_change(coins, amount)
 
-    #for i in range(1, max_amount):
-    #    if optimal_change(coins, i) == None:
-    #        str = strl[3]
-    #    elif
-    pass
+        opt_res = optimal_change(coins, amount)
+        
+        if remainder != 0 and opt_res is None:
+            result["impossible"].append(amount)
+        elif remainder != 0 and opt_res is not None:
+            result["greedy_failed"].append(amount)
+        else:
+            greedy_count = len(greedy_res)
+            opt_count, opt_coins = opt_res # optimal_change devuelve (num_monedas, lista_monedas)
+            
+            if greedy_count == opt_count:
+                result["optimal"].append(amount)
+            else:
+                result["suboptimal"].append(amount)     
+    return result
 
 # =============================================================================
 # II. Selección de actividades
