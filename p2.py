@@ -32,39 +32,35 @@ def optimal_change(coins: List[int], amount: int) -> Optional[List[int]]:
     Solución óptima mediante programación dinámica para el problema del cambio de monedas.
     Determina el menor número de monedas necesario para obtener la cantidad objetivo.
     """
-    coins.sort()
-    
-    # Nmin[i] almacenará el número de monedas (minimo)
-    # Inicializamos con 'inf'
-    Nmin = [float('inf')] * (amount + 1)
-
-    # Para la cantidad 0, se necesitan 0 monedas
-    Nmin[0] = 0
-
-    # array para rastrear qué moneda se usó por última vez para formar la cantidad i
-    moneda_usada = [-1] * (amount + 1)
-
-    # Tabla de programación dinámica
-    for i in range(1, amount + 1):
-        for moneda in coins:
-            if moneda <= i:
-            # Si usar esta moneda nos da un mejor resultado
-                if Nmin[i - moneda] + 1 < Nmin[i]:
-                    Nmin[i] = Nmin[i - moneda] + 1
-                    moneda_usada[i] = moneda
-
-    if Nmin[amount] == float('inf'):
+    if amount == 0:
+        return []
+    if amount < 0 or not coins:
         return None
 
-    # Se escribe el resultado en orden
-    resultado_monedas = []
-    cantidad_actual = amount
-    while cantidad_actual > 0:
-        moneda = moneda_usada[cantidad_actual]
-        resultado_monedas.append(moneda)
-        cantidad_actual -= moneda
+    # Ordenamos de mayor a menor sin modificar la lista de entrada
+    sorted_coins = sorted(coins, reverse=True)
+    
+    # dp[i] almacenará la mejor lista de monedas (ordenada de mayor a menor) para la cantidad i
+    dp: List[Optional[List[int]]] = [None] * (amount + 1)
+    dp[0] = []
 
-    return Nmin[amount], resultado_monedas
+    for i in range(1, amount + 1):
+        best_comb: Optional[List[int]] = None
+        for coin in sorted_coins:
+            if coin <= i and dp[i - coin] is not None:
+                # Mantenemos la combinación ordenada de mayor a menor para comparar lexicográficamente
+                candidate = sorted(dp[i - coin] + [coin], reverse=True)
+                
+                if best_comb is None:
+                    best_comb = candidate
+                elif len(candidate) < len(best_comb):
+                    best_comb = candidate
+                elif len(candidate) == len(best_comb) and candidate > best_comb:
+                    best_comb = candidate
+                    
+        dp[i] = best_comb
+
+    return dp[amount]
 
 
 def compare_change(coins: List[int], max_amount: int) -> Dict[str, List[int]]:
@@ -72,7 +68,7 @@ def compare_change(coins: List[int], max_amount: int) -> Dict[str, List[int]]:
     Evalúa todas las cantidades entre 1 y max_amount, clasifica cada cantidad en
     'optimal', 'suboptimal', 'greedy_failed' o 'impossible'.
     """
-    result = {
+    result: Dict[str, List[int]] = {
         "optimal": [],
         "suboptimal": [],
         "greedy_failed": [],
@@ -80,23 +76,19 @@ def compare_change(coins: List[int], max_amount: int) -> Dict[str, List[int]]:
     }
     
     for amount in range(1, max_amount + 1):
-        
         greedy_res, remainder = greedy_change(coins, amount)
-
         opt_res = optimal_change(coins, amount)
         
         if remainder != 0 and opt_res is None:
             result["impossible"].append(amount)
         elif remainder != 0 and opt_res is not None:
             result["greedy_failed"].append(amount)
-        else:
-            greedy_count = len(greedy_res)
-            opt_count, opt_coins = opt_res # optimal_change devuelve (num_monedas, lista_monedas)
-            
-            if greedy_count == opt_count:
+        elif opt_res is not None:
+            if len(greedy_res) == len(opt_res):
                 result["optimal"].append(amount)
             else:
-                result["suboptimal"].append(amount)     
+                result["suboptimal"].append(amount)
+                
     return result
 
 # =============================================================================
@@ -138,7 +130,7 @@ def generate_activities(n: int, seed: int = 42) -> List[Tuple[str, int, int]]:
         start = random.randint(0, 10000)
         duration = random.randint(1, 100)
         end = start + duration
-        activities.append([f"A{i}", start, end])
+        activities.append((f"A{i}", start, end))
     
     return activities
 
@@ -176,4 +168,13 @@ def generate_jobs(n: int, seed: int = 42) -> List[Tuple[str, int, int]]:
     Genera n tareas aleatorias con fecha límite reproducibles.
     profit en [1, 1000], deadline en [1, max(1, n // 10)].
     """
-    pass
+    random.seed(seed)
+    jobs = []
+    max_deadline = max(1, n // 10)
+
+    for i in range(n):
+        profit = random.randint(1, 1000)
+        deadline = random.randint(1, max_deadline)
+        jobs.append((f"J{i}", profit, deadline))
+
+    return jobs
