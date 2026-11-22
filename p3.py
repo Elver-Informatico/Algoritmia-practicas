@@ -125,7 +125,23 @@ def smith_waterman_matrix(seq1: str, seq2: str, match: int = 2, mismatch: int = 
     :param gap: Penalización por hueco.
     :return: Matriz de programación dinámica local (lista de listas de enteros).
     """
-    pass
+    m = len(seq1)
+    n = len(seq2)
+
+    # Matriz de dimensiones (m + 1) x (n + 1) inicializada a ceros
+    matrix: List[List[int]] = [[0 for _ in range(n + 1)] for _ in range(m + 1)]
+
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            score = match if seq1[i - 1] == seq2[j - 1] else mismatch
+
+            diagonal = matrix[i - 1][j - 1] + score
+            arriba = matrix[i - 1][j] + gap
+            izquierda = matrix[i][j - 1] + gap
+
+            matrix[i][j] = max(0, diagonal, arriba, izquierda)
+
+    return matrix
 
 def smith_waterman_backtracking(matrix: list[list[int]], seq1: str, seq2: str, match: int = 2, mismatch: int = -1, gap: int = -1) -> tuple[str, str, int]:
     """
@@ -144,7 +160,63 @@ def smith_waterman_backtracking(matrix: list[list[int]], seq1: str, seq2: str, m
     :param gap: Penalización por hueco.
     :return: Tupla con (sub_seq1, sub_seq2, max_score).
     """
-    pass
+    m = len(seq1)
+    n = len(seq2)
+
+    if m == 0 or n == 0 or not matrix:
+        return ("", "", 0)
+
+    # 1. Buscar el primer máximo absoluto en la matriz
+    max_score = 0
+    best_i = 0
+    best_j = 0
+
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            if matrix[i][j] > max_score:
+                max_score = matrix[i][j]
+                best_i = i
+                best_j = j
+
+    if max_score == 0:
+        return ("", "", 0)
+
+    # 2. Backtracking desde (best_i, best_j) hasta alcanzar un 0
+    sub_seq1: List[str] = []
+    sub_seq2: List[str] = []
+
+    i = best_i
+    j = best_j
+
+    while i > 0 and j > 0 and matrix[i][j] > 0:
+        current = matrix[i][j]
+        score = match if seq1[i - 1] == seq2[j - 1] else mismatch
+
+        diagonal = matrix[i - 1][j - 1] + score
+        arriba = matrix[i - 1][j] + gap
+        izquierda = matrix[i][j - 1] + gap
+
+        # Prioridad de desempate: diagonal > arriba > izquierda
+        if current == diagonal and matrix[i - 1][j - 1] >= 0:
+            sub_seq1.append(seq1[i - 1])
+            sub_seq2.append(seq2[j - 1])
+            i -= 1
+            j -= 1
+        elif current == arriba and matrix[i - 1][j] >= 0:
+            sub_seq1.append(seq1[i - 1])
+            sub_seq2.append("-")
+            i -= 1
+        elif current == izquierda and matrix[i][j - 1] >= 0:
+            sub_seq1.append("-")
+            sub_seq2.append(seq2[j - 1])
+            j -= 1
+        else:
+            break
+
+    sub_seq1.reverse()
+    sub_seq2.reverse()
+
+    return ("".join(sub_seq1), "".join(sub_seq2), max_score)
 
 # =============================================================================
 # II. Optimización de Rutas en una Cuadrícula
