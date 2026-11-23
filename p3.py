@@ -3,7 +3,6 @@
 
 import math
 import random
-from typing import List,Tuple
 
 # =============================================================================
 # I. Alineamiento de Proteínas
@@ -26,8 +25,8 @@ def needleman_wunsch_matrix(seq1: str, seq2: str, match: int = 2, mismatch: int 
     :param gap: Penalización por introducción de hueco (gap).
     :return: Matriz de programación dinámica (lista de listas de enteros).
     """
-    m = len(seq2)
-    n = len(seq1)
+    m = len(seq1)
+    n = len(seq2)
     V = [[0 for _ in range(n + 1)] for _ in range(m + 1)]
 
     # inicializacion
@@ -48,45 +47,7 @@ def needleman_wunsch_matrix(seq1: str, seq2: str, match: int = 2, mismatch: int 
 
             V[i][j] = max(diagonal, arriba, izquierda)
 
-    # Reconstruccion
-    out_X = ""
-    out_Y = ""
-    i = m
-    j = n
-
-    while i > 0 or j > 0:
-        if i > 0 and j > 0:
-            score = match if seq1[i-1] == seq2[j-1] else mismatch
-
-            diagonal = V[i-1][j-1] + score
-            arriba = V[i-1][j] + gap
-            izquierda = V[i][j-1] + gap
-            current = V[i][j]
-
-            if diagonal == current:
-                out_X = seq1[i-1] + out_X
-                out_Y = seq2[j-1] + out_Y
-                i -= 1
-                j -= 1
-            elif arriba == current:
-               out_X = seq1[i-1] + out_X
-               out_Y = "-" + out_Y
-               i -= 1
-            elif izquierda == current:
-               out_X = "-" + out_X
-               out_Y = seq2[j-1] + out_Y
-               j -= 1
-        
-        elif i == 0:
-            out_X = "-" + out_X
-            out_Y = seq2[j-1] + out_Y
-            j -= 1
-        elif j == 0:
-            out_X = seq1[i-1] + out_X
-            out_Y = "-" + out_Y
-            i -= 1
-
-    return out_X, out_Y, V[m][n]
+    return V
 
 def needleman_wunsch_backtracking(matrix: list[list[int]], seq1: str, seq2: str, match: int = 2, mismatch: int = -1, gap: int = -1) -> tuple[str, str, int]:
     """
@@ -105,7 +66,44 @@ def needleman_wunsch_backtracking(matrix: list[list[int]], seq1: str, seq2: str,
     :param gap: Penalización por hueco.
     :return: Tupla con (aligned_seq1, aligned_seq2, total_score).
     """
-    pass
+    out_X = ""
+    out_Y = ""
+    i = len(seq1)
+    j = len(seq2)
+
+    while i > 0 or j > 0:
+        if i > 0 and j > 0:
+            score = match if seq1[i-1] == seq2[j-1] else mismatch
+
+            diagonal = matrix[i-1][j-1] + score
+            arriba = matrix[i-1][j] + gap
+            izquierda = matrix[i][j-1] + gap
+            current = matrix[i][j]
+
+            if diagonal == current:
+                out_X = seq1[i-1] + out_X
+                out_Y = seq2[j-1] + out_Y
+                i -= 1
+                j -= 1
+            elif arriba == current:
+                out_X = seq1[i-1] + out_X
+                out_Y = "-" + out_Y
+                i -= 1
+            elif izquierda == current:
+                out_X = "-" + out_X
+                out_Y = seq2[j-1] + out_Y
+                j -= 1
+
+        elif i == 0:
+            out_X = "-" + out_X
+            out_Y = seq2[j-1] + out_Y
+            j -= 1
+        elif j == 0:
+            out_X = seq1[i-1] + out_X
+            out_Y = "-" + out_Y
+            i -= 1
+
+    return (out_X, out_Y, matrix[len(seq1)][len(seq2)])
 
 # I.B Alineamiento Local: Smith-Waterman
 
@@ -235,15 +233,8 @@ def min_path_recursive(grid: list[list[int]], i: int, j: int) -> int:
     :param j: Índice de la columna de la celda destino.
     :return: Coste acumulado mínimo para llegar a la celda (i, j).
     """
-    if i==0 and j==0:
-        return grid[0][0]
-    elif i==0:
-        return grid [0][j] + min_path_recursive(grid,0,j-1)
-    elif j==0:
-        return grid[i][0] + min_path_recursive(grid,i-1,0)
-    else:
-        return grid[i][j] + min(min_path_recursive(grid,i-1,j),min_path_recursive(grid,i,j-1))
-    
+    pass
+
 # II.B Programación Dinámica (Enfoque Bottom-Up)
 
 def min_path_dp(grid: list[list[int]]) -> tuple[int, list[list[int]]]:
@@ -254,7 +245,23 @@ def min_path_dp(grid: list[list[int]]) -> tuple[int, list[list[int]]]:
     :param grid: Matriz de costes de dimensiones N x M.
     :return: Tupla con el coste mínimo global (int) y la matriz dp de costes acumulados.
     """
-    pass
+    m = len(grid)
+    n = len(grid[0])
+
+    dp = [[0 for _ in range(n)] for _ in range(m)]
+
+    dp[0][0] = grid[0][0]
+
+    for i in range(1, m):
+        dp[i][0] = grid[i][0] + dp[i-1][0]
+    for j in range(1, n):
+        dp[0][j] = grid[0][j] + dp[0][j-1]
+
+    for i in range(1, m):
+        for j in range(1, n):
+            dp[i][j] = grid[i][j] + min(dp[i-1][j], dp[i][j-1])
+
+    return (dp[m-1][n-1], dp)
 
 # II.C Reconstrucción de la Ruta Óptima
 
