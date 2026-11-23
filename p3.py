@@ -3,6 +3,7 @@
 
 import math
 import random
+from typing import List,Tuple
 
 # =============================================================================
 # I. Alineamiento de Proteínas
@@ -234,8 +235,15 @@ def min_path_recursive(grid: list[list[int]], i: int, j: int) -> int:
     :param j: Índice de la columna de la celda destino.
     :return: Coste acumulado mínimo para llegar a la celda (i, j).
     """
-    pass
-
+    if i==0 and j==0:
+        return grid[0][0]
+    elif i==0:
+        return grid [0][j] + min_path_recursive(grid,0,j-1)
+    elif j==0:
+        return grid[i][0] + min_path_recursive(grid,i-1,0)
+    else:
+        return grid[i][j] + min(min_path_recursive(grid,i-1,j),min_path_recursive(grid,i,j-1))
+    
 # II.B Programación Dinámica (Enfoque Bottom-Up)
 
 def min_path_dp(grid: list[list[int]]) -> tuple[int, list[list[int]]]:
